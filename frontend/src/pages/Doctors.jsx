@@ -23,8 +23,8 @@ const Doctors = () => {
   }, [doctors, speciality])
 
   return (
-    <div>
-      <p className='text-gray-600'>Browse through the doctors specialist.</p>
+    <div className='md:mx-20 mt-12'>
+      <h2 className='text-black-600 text-4xl text-center font-bold py-6'>Browse Doctors</h2>
 
       <div className='flex flex-col sm:flex-row items-start gap-5 mt-5'>
         <button className={`py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilter ? 'bg-primary text-white' : ''}`} onClick={() => setShowFilter(prev => !prev)}>Filters</button>
