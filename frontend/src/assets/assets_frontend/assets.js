@@ -36,7 +36,7 @@ import General_physician from './General_physician.svg'
 import Gynecologist from './Gynecologist.svg'
 import Neurologist from './Neurologist.svg'
 import Pediatricians from './Pediatricians.svg'
-
+import NotFound from './not_found.png'
 
 export const assets = {
     appointment_img,
@@ -70,7 +70,8 @@ export const assets = {
     doc12,
     doc13,
     doc14,
-    doc15
+    doc15,
+    NotFound
 }
 
 export const specialityData = [

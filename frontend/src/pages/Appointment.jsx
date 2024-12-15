@@ -29,7 +29,7 @@ const Appointment = () => {
 
     // getting current date
     let today = new Date()
-
+    today.setDate(today.getDate() + 1);
     for (let i = 0; i < 7; i++) {
       // getting date with index
       let currentDate = new Date(today)
@@ -122,7 +122,7 @@ const Appointment = () => {
   }, [docSlots])
 
   return docInfo && (
-    <div>
+    <div className="md:mx-20 mt-12">
       {/* ---------- Doctor Details ---------- */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div>

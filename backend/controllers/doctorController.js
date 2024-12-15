@@ -17,11 +17,19 @@ const changeAvailablity = async (req, res) => {
 }
 
 const doctorList = async (req, res) => {
-
   try {
-
-    const doctors = await doctorModel.find({}).select(['-password', '-email'])
-    res.json({ success: true, doctors })
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const speciality = req.query.speciality; 
+    let query={};
+    if(speciality){
+      query.speciality=speciality;
+    }
+    console.log("22", req.query);
+    const totalCount = await doctorModel.countDocuments(query);
+    const doctors = await doctorModel.find(query).select(['-password', '-email']).skip(skip).limit(limit);
+    res.json({ success: true, doctors, numberOfDoctors:totalCount })
 
   } catch (error) {
     console.log(error)
