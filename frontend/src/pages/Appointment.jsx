@@ -5,7 +5,7 @@ import { assets } from '../assets/assets_frontend/assets'
 import RelatedDoctor from '../components/RelatedDoctor'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-
+import PaymentGateway from '../components/Payment'
 const Appointment = () => {
 
   const { docId } = useParams()
@@ -23,13 +23,19 @@ const Appointment = () => {
     const docInfo = doctors.find(doc => doc._id === docId)
     setDocInfo(docInfo)
   }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(null); // Tracks success value
 
+  const handlePaymentSuccess = (status) => {
+    setPaymentStatus(status);
+    setIsModalOpen(false); // Close the modal after payment
+    bookAppointment();
+  };
   const getAvailableSlots = async () => {
     setDocSlots([])
 
     // getting current date
     let today = new Date()
-    today.setDate(today.getDate() + 1);
     for (let i = 0; i < 7; i++) {
       // getting date with index
       let currentDate = new Date(today)
@@ -61,7 +67,7 @@ const Appointment = () => {
         const slotDate = day + '_' + month + '_' + year
         const slotTime = formattedTime
 
-        const isSlotAvailable = docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(slotTime) ? false : true
+        const isSlotAvailable = docInfo?.slots_booked[slotDate] && docInfo?.slots_booked[slotDate]?.includes(slotTime) ? false : true
 
         if (isSlotAvailable) {
           // add slot to array
@@ -119,11 +125,28 @@ const Appointment = () => {
 
   useEffect(() => {
     console.log(docSlots)
+    if(docSlots.length > 0){
+    const now = new Date(); // Current date and time
+    const eveningTime = new Date();
+    eveningTime.setHours(20, 30, 0, 0); // 8:30 PM (20:30:00)
+    if(now > eveningTime) setSlotIndex(1);}
   }, [docSlots])
-
+  const scrollLeft=()=> {
+    const container = document.getElementById('scrollable-container');
+    container.scrollBy({ left: -150, behavior: 'smooth' }); // Adjust scroll amount as needed
+  }
+  
+  const scrollRight=()=> {
+    const container = document.getElementById('scrollable-container');
+    container.scrollBy({ left: 150, behavior: 'smooth' }); // Adjust scroll amount as needed
+  }
+  
   return docInfo && (
     <div className="md:mx-20 mt-12">
       {/* ---------- Doctor Details ---------- */}
+      <div className="flex justify-center mb-6">
+       <span className="text-3xl md:text-4xl lg:text-5xl text-black font-semibold leading-tight md:leading-tight lg:leading-tight">Book Appointment</span>
+      </div>
       <div className="flex flex-col sm:flex-row gap-4">
         <div>
           <img className='bg-primary w-full sm:max-w-72 rounded-lg' src={docInfo.image} alt="" />
@@ -152,28 +175,68 @@ const Appointment = () => {
       <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
         <p>Booking slots</p>
 
-        <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
+        <div className="flex gap-3 items-center w-3/4 overflow-x-scroll mt-4">
           {
             docSlots.length && docSlots.map((item, index) => (
-              <div onClick={() => setSlotIndex(index)} className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex === index ? 'bg-primary text-white' : 'border border-gray-200'}`} key={index}>
-                <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
-                <p>{item[0] && item[0].datetime.getDate()}</p>
+              item.length>0 &&
+              <div onClick={() => setSlotIndex(index)} className={`text-center py-2 px-2 min-w-16 rounded cursor-pointer ${slotIndex === index ? 'bg-primary text-white' : 'border border-gray-200'}`} key={index}>
+                <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}, {item[0] && item[0].datetime.getDate()}</p>
               </div>
             ))
           }
         </div>
 
-        <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4'>
-          {
-            docSlots.length && docSlots[slotIndex].map((item, index) => (
-              <p onClick={() => setSlotTime(item.time)} className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'text-gray-400 border border-gray-300'}`} key={index}>
-                {item.time.toLowerCase()}
-              </p>
-            ))
-          }
-        </div>
+  <div className="flex items-center gap-3 w-3/4 overflow-x-scroll mt-8">
+  {/* Scrollable Container */}
+    <div id="scrollable-container" className="flex items-center gap-3 overflow-x-scroll scroll-smooth">
+      {
+        docSlots.length && docSlots[slotIndex].map((item, index) => (
+          <p 
+            onClick={() => setSlotTime(item.time)} 
+            className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'text-gray-400 border border-gray-300'}`} 
+            key={index}
+          >
+            {item.time.toLowerCase()}
+          </p>
+        ))
+      }
+    </div>
+  </div>
 
-        <button onClick={bookAppointment} className="bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an appointment</button>
+  <div className='flex justify-center mt-4' style={{marginLeft:"-50vh"}}>
+  <button 
+    onClick={() => scrollLeft()} 
+    className="bg-primary hover:bg-primary text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-primary rounded"
+  >
+    ←
+  </button>
+  <button 
+    onClick={() => scrollRight()} 
+    className="bg-primary hover:bg-primary text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-primary rounded ml-2"
+  >
+    →
+  </button>
+  </div>
+  <div>
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="bg-primary hover:bg-primary text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-primary rounded ml-2"
+      >
+       Pay Now
+      </button>
+
+      {/* <p className="mt-4">Payment Status: {paymentStatus ? "Success" : "Pending"}</p> */}
+
+      {isModalOpen && (
+        <PaymentGateway
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
+      )}
+    </div>
+       {/* <PaymentGateway/> */}
+        {/* <button onClick={bookAppointment} className="bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an appointment</button> */}
       </div>
 
       {/* Listing Related Doctors */}
