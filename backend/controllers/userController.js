@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import userModel from '../models/userModel.js'
 import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
-
+import nodemailer from 'nodemailer';
 // API to register user
 const registerUser = async (req, res) => {
 
@@ -169,7 +169,7 @@ const bookAppointment = async (req, res) => {
 
     // save new slots data in docData
     await doctorModel.findByIdAndUpdate(docId, { slots_booked })
-
+    await sendAppointment(docData.email,slotTime,slotDate,userId).catch();
     res.json({ success: true, message: 'Appointment Booked' })
 
   } catch (error) {
@@ -219,7 +219,7 @@ const cancelAppointment = async (req, res) => {
     slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime)
 
     await doctorModel.findByIdAndUpdate(docId, { slots_booked })
-
+    await cancelAppointmentMail(doctorData.email, slotTime, slotDate, userId).catch();
     res.json({ success: true, message: 'Appointment Cancelled' })
 
   } catch (error) {
@@ -228,5 +228,97 @@ const cancelAppointment = async (req, res) => {
   }
 
 }
+const sendAppointment = async (doctorEmail, slotTime, slotDate, uniqueId) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for port 465, false for other ports
+      auth: {
+        user: process.env.Email, // Your Gmail email address
+        pass: process.env.password, // Your Gmail app password
+      },
+    });
+
+    // Compose the email
+    const info = await transporter.sendMail({
+      from: process.env.Email, // sender address
+      to: doctorEmail, // dynamically set doctor email
+      subject: "Appointment Confirmation", // Subject line
+      text: `Hello, 
+      
+      You have a new appointment scheduled.
+
+      Details:
+      - Slot Time: ${slotTime}
+      - Slot Date: ${slotDate}
+      - Unique ID: ${uniqueId}
+
+      Thank you,
+      Healthmate Team`, // plain text body
+            html: `<p>Hello,</p>
+      <p>You have a new appointment scheduled.</p>
+      <p><strong>Details:</strong></p>
+      <ul>
+        <li><strong>Slot Time:</strong> ${slotTime}</li>
+        <li><strong>Slot Date:</strong> ${slotDate}</li>
+        <li><strong>Unique ID:</strong> ${uniqueId}</li>
+      </ul>
+      <p>Thank you,</p>
+      <p><strong>Healthmate Team</strong></p>`, // HTML body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+const cancelAppointmentMail = async (doctorEmail, slotTime, slotDate, uniqueId) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for port 465, false for other ports
+      auth: {
+        user: process.env.Email, // Your Gmail email address
+        pass: process.env.password, // Your Gmail app password
+      },
+    });
+
+    // Compose the email
+    const info = await transporter.sendMail({
+      from: process.env.Email, // sender address
+      to: doctorEmail, // dynamically set doctor email
+      subject: "Appointment Cancelled", // Subject line
+      text: `Hello, 
+      
+      The following appointment is canceled.
+
+      Details:
+      - Slot Time: ${slotTime}
+      - Slot Date: ${slotDate}
+      - Unique ID: ${uniqueId}
+
+      Thank you,
+      Healthmate Team`, // plain text body
+            html: `<p>Hello,</p>
+      <p>The following appointment is canceled.</p>
+      <p><strong>Details:</strong></p>
+      <ul>
+        <li><strong>Slot Time:</strong> ${slotTime}</li>
+        <li><strong>Slot Date:</strong> ${slotDate}</li>
+        <li><strong>Unique ID:</strong> ${uniqueId}</li>
+      </ul>
+      <p>Thank you,</p>
+      <p><strong>Healthmate Team</strong></p>`, // HTML body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
 
 export { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment }

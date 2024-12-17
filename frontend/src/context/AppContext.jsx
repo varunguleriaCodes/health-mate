@@ -7,7 +7,7 @@ export const AppContext = createContext();
 const AppContextProvider = (props) => {
 
   const currencySymbol = '$'
-  const backendUrl = "http://localhost:4000"
+  const backendUrl = process.env.REACT_APP_BACKEND_URL
 
   const [doctors, setDoctors] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)

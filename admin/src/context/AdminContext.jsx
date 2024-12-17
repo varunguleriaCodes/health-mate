@@ -11,7 +11,7 @@ const AdminContextProvider = (props) => {
   const [appointments, setAppointments] = useState([])
   const [dashData, setDashData] = useState(false)
 
-  const backendUrl = "http://localhost:4000"
+  const backendUrl = process.env.REACT_APP_BACKEND_URL
 
   const getAllDoctors = async () => {
 
