@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
-const backendUrl = process.env.REACT_APP_BACKEND_URL;
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+console.log("backendUrl", import.meta.env);
 const Doctors = () => {
   const { speciality } = useParams();
   const [filterDoc, setFilterDoc] = useState([]);
