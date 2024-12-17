@@ -268,8 +268,6 @@ const sendAppointment = async (doctorEmail, slotTime, slotDate, uniqueId) => {
       <p>Thank you,</p>
       <p><strong>Healthmate Team</strong></p>`, // HTML body
     });
-
-    console.log("Message sent: %s", info.messageId);
   } catch (error) {
     console.error("Error sending email:", error);
   }
@@ -315,7 +313,6 @@ const cancelAppointmentMail = async (doctorEmail, slotTime, slotDate, uniqueId) 
       <p><strong>Healthmate Team</strong></p>`, // HTML body
     });
 
-    console.log("Message sent: %s", info.messageId);
   } catch (error) {
     console.error("Error sending email:", error);
   }

@@ -27,7 +27,6 @@ const doctorList = async (req, res) => {
     if(speciality){
       query.speciality=speciality;
     }
-    console.log("22", req.query);
     const totalCount = await doctorModel.countDocuments(query);
     const doctors = await doctorModel.find(query).select(['-password', '-email']).skip(skip).limit(limit);
     res.json({ success: true, doctors, numberOfDoctors:totalCount })
