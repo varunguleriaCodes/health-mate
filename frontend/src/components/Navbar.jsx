@@ -32,7 +32,7 @@ const Navbar = () => {
             </div>
             <div className="hidden items-center gap-2 md:flex">
               <a
-                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer"
                 href="/"
               >
                 <span className="relative z-[2] flex items-center gap-1">
@@ -40,24 +40,24 @@ const Navbar = () => {
                 </span>
               </a>
               <a
-                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                href="/doctors"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer"
+                onClick={() => navigate('/doctors')}
               >
                 <span className="relative z-[2] flex items-center gap-1">
                   <span>DOCTORS</span>
                 </span>
               </a>
               <a
-                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                href="/about"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer"
+                onClick={() => navigate('/about')}
               >
                 <span className="relative z-[2] flex items-center gap-1">
                   <span>ABOUT</span>
                 </span>
               </a>
               <a
-                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                href="/contact"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-2.5 py-1 font-medium transition-colors hover:bg-accent hover:!text-black focus:bg-accent focus:!text-black focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 cursor-pointer"
+                onClick={() => navigate('/contact')}
               >
                 <span className="relative z-[2] flex items-center gap-1">
                   <span>CONTACT</span>
